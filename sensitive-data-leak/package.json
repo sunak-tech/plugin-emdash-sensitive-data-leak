@@ -1,0 +1,26 @@
+{
+  "name": "@snack222/plugin-emdash-sensitive-data-leak",
+  "version": "0.1.1",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./sandbox": "./dist/sandbox-entry.mjs",
+    "./admin": "./dist/admin.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "dependencies": {
+    "@emdash-cms/admin": "^0.1.0"
+  }
+}
