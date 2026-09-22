@@ -1,6 +1,26 @@
 {
   "name": "@snack222/plugin-emdash-sensitive-data-leak",
-  "version": "0.1.1",
+  "version": "0.2.0",
+  "description": "emdash CMS plugin that scans content for API keys, tokens and other secrets on save, and surfaces detections in the admin UI.",
+  "keywords": [
+    "emdash",
+    "emdash-plugin",
+    "cms",
+    "astro",
+    "security",
+    "secret-scanning",
+    "sensitive-data"
+  ],
+  "homepage": "https://github.com/sunak-tech/plugin-emdash-sensitive-data-leak#readme",
+  "bugs": {
+    "url": "https://github.com/sunak-tech/plugin-emdash-sensitive-data-leak/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunak-tech/plugin-emdash-sensitive-data-leak.git"
+  },
+  "license": "MIT",
+  "author": "snack222",
   "type": "module",
   "main": "./dist/index.mjs",
   "exports": {
@@ -11,16 +31,20 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown"
+  },
+  "peerDependencies": {
+    "emdash": "^0.1.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "emdash": "^0.1.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
-  },
-  "dependencies": {
-    "@emdash-cms/admin": "^0.1.0"
   }
 }
