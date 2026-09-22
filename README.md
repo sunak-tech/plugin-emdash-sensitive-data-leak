@@ -51,8 +51,11 @@ The admin UI is built with React, so the host project needs the `@astrojs/react`
 ## How It Works
 
 Every field of an entry is serialised and scanned on the `content:beforeSave` hook.
-When a pattern matches, the plugin appends a record — timestamp, collection, entry id and the
+When a pattern matches, the plugin appends a record — timestamp, collection, entry title and the
 matched pattern names — to its own KV storage. The most recent 50 warnings are kept.
+
+The hook only receives the entry's field data, so the title is used to identify the entry;
+the entry id is not available at that point.
 
 The save itself always goes through.
 
@@ -122,8 +125,11 @@ export default defineConfig({
 ## 動作
 
 保存前（`content:beforeSave`）にコンテンツ全体を文字列化してスキャンします。
-パターンに一致した場合、検出日時・コレクション・エントリID・一致したパターン名を
+パターンに一致した場合、検出日時・コレクション・エントリのタイトル・一致したパターン名を
 プラグイン専用の KV ストレージに記録します。保持するのは直近50件です。
+
+フックに渡るのはエントリのフィールドデータだけなので、識別にはタイトルを使います。
+この時点ではエントリIDは取得できません。
 
 保存処理そのものは必ず完了します。
 

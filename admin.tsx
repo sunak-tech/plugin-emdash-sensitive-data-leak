@@ -3,9 +3,15 @@ import { useEffect, useRef, useState } from "react";
 type WarningLog = {
   at: string;
   collection: string;
-  entryId: string;
+  entry: string;
   detected: string;
+  /** Written by <= 0.1.x, always "unknown". Kept so old records still render. */
+  entryId?: string;
 };
+
+function entryLabel(log: WarningLog): string {
+  return log.entry ?? log.entryId ?? "(unknown)";
+}
 
 async function fetchWarnings(): Promise<WarningLog[]> {
   const response = await fetch("/_emdash/api/plugins/sensitive-data-leak-detector/warnings", {
@@ -17,8 +23,9 @@ async function fetchWarnings(): Promise<WarningLog[]> {
     throw new Error(`Failed to load warnings: ${response.status}`);
   }
 
-  const data: unknown = await response.json();
-  return (data as WarningLog[]) ?? [];
+  // emdash wraps every plugin route result in { data: ... }
+  const body = (await response.json()) as { data?: WarningLog[] };
+  return Array.isArray(body?.data) ? body.data : [];
 }
 
 function WarningsWidget() {
@@ -110,7 +117,7 @@ function WarningsWidget() {
         {logs.map((log, i) => (
           <div key={i} style={{ marginBottom: "12px", padding: "8px", border: "1px solid #444", borderRadius: "6px" }}>
             <div style={{ fontSize: "12px", color: "#aaa" }}>
-              {new Date(log.at).toLocaleString("ja-JP")} — {log.collection} / {log.entryId}
+              {new Date(log.at).toLocaleString("ja-JP")} — {log.collection} / {entryLabel(log)}
             </div>
             <div style={{ color: "#f87171" }}>
               🔐 {log.detected}
@@ -139,7 +146,7 @@ function WarningsWidget() {
             ⚠️ 機密情報の可能性を検知しました
           </div>
           <div style={{ fontSize: "13px", lineHeight: 1.5, marginBottom: "8px" }}>
-            {popup.collection} / {popup.entryId}
+            {popup.collection} / {entryLabel(popup)}
             <br />
             検知: {popup.detected}
           </div>

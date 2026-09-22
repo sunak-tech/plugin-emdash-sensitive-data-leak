@@ -10,9 +10,22 @@ const patterns = [
 type WarningLog = {
   at: string;
   collection: string;
-  entryId: string;
+  entry: string;
   detected: string;
 };
+
+/**
+ * content:beforeSave receives only the entry's field data - the id and slug
+ * live outside it and are not available here. The title is the only thing an
+ * editor can actually use to find the entry again.
+ */
+function entryLabel(event: ContentHookEvent): string {
+  for (const key of ["title", "slug", "name"]) {
+    const value = event.content[key];
+    if (typeof value === "string" && value.trim() !== "") return value;
+  }
+  return event.isNew ? "(new entry)" : "(untitled)";
+}
 export function createPlugin() {
   return definePlugin({
     id: "sensitive-data-leak-detector",
@@ -34,7 +47,7 @@ export function createPlugin() {
           logs.unshift({
             at: new Date().toISOString(),
             collection: event.collection,
-            entryId: String(event.content.id ?? "unknown"),
+            entry: entryLabel(event),
             detected: names,
           });
           await ctx.kv.set("warnings", logs.slice(0, 50));
