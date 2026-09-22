@@ -16,7 +16,7 @@ type WarningLog = {
 export function createPlugin() {
   return definePlugin({
     id: "sensitive-data-leak-detector",
-    version: "0.1.1",
+    version: __PLUGIN_VERSION__,
     capabilities: ["read:content", "write:content"],
     hooks: {
       "content:beforeSave": async (event: ContentHookEvent, ctx: PluginContext) => {
