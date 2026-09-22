@@ -5,16 +5,19 @@ const patterns = [
   { name: "APIキー (OpenAI)", regex: /sk-[a-zA-Z0-9]{32,}/g },
   { name: "GitHub Token", regex: /ghp_[a-zA-Z0-9]{36}/g },
   { name: "JWT Token", regex: /eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g },
-  { name: "メールアドレス", regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}/g },
 ];
 
 type WarningLog = {
   at: string;
   collection: string;
+  entryId: string;
   detected: string;
 };
 export function createPlugin() {
   return definePlugin({
+    id: "sensitive-data-leak-detector",
+    version: "0.1.1",
+    capabilities: ["read:content", "write:content"],
     hooks: {
       "content:beforeSave": async (event: ContentHookEvent, ctx: PluginContext) => {
         const text = JSON.stringify(event.content);
@@ -31,6 +34,7 @@ export function createPlugin() {
           logs.unshift({
             at: new Date().toISOString(),
             collection: event.collection,
+            entryId: String(event.content.id ?? "unknown"),
             detected: names,
           });
           await ctx.kv.set("warnings", logs.slice(0, 50));
